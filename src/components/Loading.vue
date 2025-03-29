@@ -57,11 +57,10 @@ const props = withDefaults(defineProps<Props>(), {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        font-weight: bold;
         text-shadow:
             1px 1px 1px #fff,
             -1px -1px 1px #fff;
-        font-size: 24px;
+        font-size: 20px;
         z-index: 999999;
     }
 }

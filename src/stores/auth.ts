@@ -1,31 +1,9 @@
 import { defineStore } from 'pinia'
-import axios, { AxiosError } from 'axios'
+import { AxiosError } from 'axios'
 import router from '@/router'
 import { jwtDecode } from 'jwt-decode'
-
-interface JWTPayload {
-    exp: number
-    name: string
-    level: number | null
-    sub: number
-}
-
-interface Admin {
-    id: number
-    name: string
-    level: number
-    remarks?: string
-    created_at: string
-    updated_at: string
-}
-
-export interface AuthState {
-    token: string | null
-    isAuthenticated: boolean
-    name: string | null
-    level: number | null
-    adminList: Admin[]
-}
+import { msgpackRequest } from '@/utils/msgpackRequest'
+import { JWTPayload, Admin, AuthState } from '@/types/types'
 
 export const useAuthStore = defineStore('auth', {
     state: (): AuthState => ({
@@ -39,16 +17,12 @@ export const useAuthStore = defineStore('auth', {
     actions: {
         async login(name: string, password: string) {
             try {
-                const response = await axios.post(
-                    `/api/admin/login.php`,
+                const response = await msgpackRequest<{ token: string }>(
+                    '/api/admin/login.php',
                     { name, password },
-                    {
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    },
                 )
-                this.token = response.data.token
+
+                this.token = response.token
 
                 // JWTをlocalStorageに保存
                 if (this.token) {
@@ -116,17 +90,14 @@ export const useAuthStore = defineStore('auth', {
 
         async fetchAdminList() {
             try {
-                const token = this.token || localStorage.getItem('jwt_token')
-                const response = await axios.post(
+                const token =
+                    this.token ?? localStorage.getItem('jwt_token') ?? undefined
+                const response = await msgpackRequest<Admin[]>(
                     '/api/admin/index.php',
                     { action: 'list' },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    },
+                    { token },
                 )
-                this.adminList = response.data
+                this.adminList = response
             } catch (err) {
                 const error = err as AxiosError
                 console.error('管理者一覧の取得に失敗しました', error)

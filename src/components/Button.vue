@@ -64,6 +64,12 @@ $color-styles: (
         'hover-color': #fff,
         'hover-background-color': #bbb,
     ),
+    'red': (
+        'color': #fff,
+        'background-color': #c11d1d,
+        'hover-color': #fff,
+        'hover-background-color': #c11d1d,
+    ),
 );
 
 .Button {

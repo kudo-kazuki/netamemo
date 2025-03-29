@@ -3,11 +3,15 @@ require_once __DIR__ . '/../bootstrap.php';
 
 use Firebase\JWT\JWT;
 use Models\Admin;
+use MessagePack\Packer;
+use MessagePack\BufferUnpacker;
 
-header('Content-Type: application/json');
+// MessagePackでリクエスト受け取り
+$raw = file_get_contents('php://input');
+$unpacker = new BufferUnpacker();
+$unpacker->reset($raw);
+$input = $unpacker->unpack();
 
-// リクエストボディを取得
-$input = json_decode(file_get_contents('php://input'), true);
 $name = $input['name'] ?? '';
 $password = $input['password'] ?? '';
 
@@ -16,7 +20,9 @@ $admin = Admin::where('name', $name)->first();
 
 if (!$admin || !password_verify($password, $admin->password)) {
     http_response_code(401);
-    echo json_encode(['error' => '認証に失敗しました']);
+    header('Content-Type: application/x-msgpack');
+    $packer = new Packer();
+    echo $packer->pack(['message' => '認証に失敗しました']);
     exit;
 }
 
@@ -32,4 +38,6 @@ $payload = [
 $token = JWT::encode($payload, $_ENV['JWT_SECRET'], 'HS256');
 
 // 成功レスポンス
-echo json_encode(['token' => $token]);
+$packer = new Packer();
+header('Content-Type: application/x-msgpack');
+echo $packer->pack(['token' => $token]);

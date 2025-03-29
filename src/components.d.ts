@@ -9,11 +9,14 @@ declare module 'vue' {
   export interface GlobalComponents {
     Button: typeof import('./components/Button.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     Loading: typeof import('./components/Loading.vue')['default']
+    Modal: typeof import('./components/Modal.vue')['default']
     PreLoad: typeof import('./components/PreLoad.vue')['default']
     Radio: typeof import('./components/Radio.vue')['default']
+    RequireLabel: typeof import('./components/RequireLabel.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

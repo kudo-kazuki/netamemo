@@ -2,6 +2,19 @@
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use MessagePack\BufferUnpacker;
+
+function getMsgPackInput(): array
+{
+    $raw = file_get_contents('php://input');
+    if (empty($raw)) {
+        return [];
+    }
+
+    $unpacker = new BufferUnpacker();
+    $unpacker->reset($raw);
+    return $unpacker->unpack();
+}
 
 // JSON入力を取得
 function getJsonInput(): array

@@ -38,7 +38,7 @@ final class CreateUsersTable extends AbstractMigration
             ])
             ->addColumn('gender', 'integer', [
                 'null' => true,
-                'comment' => '性別: 1=男性, 2=女性, 3=その他'
+                'comment' => '性別: 1=男性, 2=女性'
             ])
             ->addColumn('message', 'string', [
                 'limit' => 255,

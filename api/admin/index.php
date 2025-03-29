@@ -21,6 +21,12 @@ switch ($action) {
     case 'delete':
         $controller->delete($input);
         break;
+    case 'userList':
+        msgpack_response($controller->userList($input));
+        break;
+    case 'userStatusChange':
+        $controller->userStatusChange($input);
+        break;
     default:
         msgpack_response('アクションが無効です', 400);
         break;

@@ -76,20 +76,22 @@ input[type='time'],
 input[type='color'],
 textarea,
 select {
-    border: 1px solid #ccc;
-    padding: 0.5rem;
-    font-size: 1rem;
-    border-radius: 4px;
-    outline: none;
-    font-family: inherit;
-    width: 100%;
+    &:not(.el-input__inner) {
+        border: 1px solid #ccc;
+        padding: 0.5rem;
+        font-size: 1rem;
+        border-radius: 4px;
+        outline: none;
+        font-family: inherit;
+        width: 100%;
 
-    &:focus {
-        border-color: #007bff;
-    }
+        &:focus {
+            border-color: #007bff;
+        }
 
-    &.error {
-        border-color: #ec2222;
+        &.error {
+            border-color: #ec2222;
+        }
     }
 }
 

@@ -3,7 +3,13 @@ import { AxiosError } from 'axios'
 import router from '@/router'
 import { jwtDecode } from 'jwt-decode'
 import { msgpackRequest } from '@/utils/msgpackRequest'
-import { JWTPayload, Admin, AuthState } from '@/types/types'
+import {
+    JWTPayload,
+    Admin,
+    AuthState,
+    User,
+    UserFilterForm,
+} from '@/types/types'
 
 export const useAuthStore = defineStore('auth', {
     state: (): AuthState => ({
@@ -12,6 +18,8 @@ export const useAuthStore = defineStore('auth', {
         name: null,
         level: null,
         adminList: [],
+        userListLoading: false,
+        userStatusChangeLoading: false,
     }),
 
     actions: {
@@ -103,6 +111,54 @@ export const useAuthStore = defineStore('auth', {
                 console.error('管理者一覧の取得に失敗しました', error)
                 console.log(error?.response?.data)
                 this.adminList = []
+            }
+        },
+
+        async fetchUserList(filters: Partial<UserFilterForm> = {}) {
+            const token = this.token || localStorage.getItem('jwt_token')
+            if (!token || this.level !== 0) {
+                return
+            }
+
+            this.userListLoading = true
+
+            try {
+                const response = await msgpackRequest<User[]>(
+                    '/api/admin/index.php',
+                    { action: 'userList', ...filters },
+                    { token },
+                )
+                return response
+            } catch (error) {
+                console.error('ユーザー一覧取得失敗', error)
+                return []
+            } finally {
+                this.userListLoading = false
+            }
+        },
+
+        async changeUserStatus(id: number, status: number) {
+            try {
+                const token = this.token || localStorage.getItem('jwt_token')
+                if (!token || this.level !== 0) {
+                    return
+                }
+
+                this.userStatusChangeLoading = true
+
+                await msgpackRequest(
+                    '/api/admin/index.php',
+                    {
+                        action: 'userStatusChange',
+                        id,
+                        status,
+                    },
+                    { token: token },
+                )
+            } catch (error) {
+                throw error
+            } finally {
+                this.userStatusChangeLoading = false
             }
         },
     },

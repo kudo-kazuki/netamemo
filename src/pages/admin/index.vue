@@ -222,6 +222,10 @@ const saveCreateAdmin = async () => {
             }}）
         </p>
 
+        <ul>
+            <li><router-link to="/admin/user">ユーザー管理</router-link></li>
+        </ul>
+
         <Button
             @click.prevent="logout()"
             class="Page__logoutButton"

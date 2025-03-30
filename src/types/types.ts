@@ -24,16 +24,22 @@ export interface AuthState {
     userStatusChangeLoading?: boolean
 }
 
-export interface User {
+/**ユーザーが登録時に入力するとき */
+export interface UserForInput {
+    name?: string
+    email?: string
+    birthday?: string | null
+    gender?: number | null
+    message?: string
+    profile?: string
+}
+
+export interface User extends UserForInput {
     id: number
     name: string
     email: string
     status: number
     last_login_at: string | null
-    birthday: string | null
-    gender: number | null
-    message?: string
-    profile?: string
     notes?: string
     created_at: string
     updated_at: string

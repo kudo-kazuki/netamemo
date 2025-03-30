@@ -17,6 +17,7 @@ const { windowWidth, deviceType } = useWindowWidthAndDevice()
         :data-windowWidth="windowWidth"
     >
         <h1>新規登録</h1>
+        <CreateForm />
     </section>
 </template>
 

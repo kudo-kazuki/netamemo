@@ -5,8 +5,8 @@ interface Props {
     id: string
     name?: string
     text: number | string
-    value: number | string | boolean
-    modelValue: number | string | boolean
+    value?: number | string | boolean | null
+    modelValue?: number | string | boolean | null
 }
 
 const props = withDefaults(defineProps<Props>(), {})

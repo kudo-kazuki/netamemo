@@ -28,9 +28,24 @@ class UserController
             msgpack_response(['message' => 'バリデーションエラー', 'errors' => $errors], 422);
         }
 
-        // メールアドレスが既に登録されているかチェック（ステータスに関係なく）
-        if (User::where('email', $input['email'])->exists()) {
-            msgpack_response(['message' => 'すでに登録されているメールアドレスです'], 409);
+        // 同じメールアドレスの仮登録をチェックして上書き or エラー
+        $existing = User::where('email', $input['email'])->first();
+        if ($existing) {
+            if ((int)$existing->status === 0) {
+                $createdAt = strtotime($existing->email_verify_token_created_at ?? '');
+                $expiresAt = $createdAt + (60 * 60 * 24); // 24時間
+
+                if (time() > $expiresAt) {
+                    // 有効期限切れの仮登録 → 削除
+                    $existing->delete();
+                } else {
+                    // 有効期限内の仮登録 → 再登録禁止
+                    msgpack_response(['message' => 'このメールアドレスは既に仮登録されています。'], 409);
+                }
+            } else {
+                // 本登録済み or アクセス禁止/退会済み → エラー
+                msgpack_response(['message' => 'すでに登録されているメールアドレスです'], 409);
+            }
         }
 
         try {

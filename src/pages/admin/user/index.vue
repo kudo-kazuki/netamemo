@@ -19,7 +19,7 @@ const formatDate = (value: string | number) => {
 const createDateFormatter = (field: keyof User) => {
     return (row: User) => {
         const value = row?.[field]
-        return value ? formatDate(value) : ''
+        return value && typeof value !== 'boolean' ? formatDate(value) : ''
     }
 }
 

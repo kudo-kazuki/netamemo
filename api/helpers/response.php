@@ -1,13 +1,28 @@
 <?php
 use MessagePack\Packer;
+use MessagePack\Exception\PackerException;
 
 function msgpack_response(mixed $data, int $status = 200): void
 {
     http_response_code($status);
     header('Content-Type: application/x-msgpack');
 
-    $packer = new Packer();
-    echo $packer->pack($data);
+    try {
+        $packer = new Packer();
+        echo $packer->pack($data);
+    } catch (PackerException $e) {
+        // エラーログに書くなど
+        error_log('MessagePack pack failed: ' . $e->getMessage());
+
+        // JSON形式で代替エラー出力（デバッグしやすく）
+        http_response_code(500);
+        header('Content-Type: application/json');
+        echo json_encode([
+            'message' => 'レスポンスのエンコードに失敗しました',
+            'error' => $e->getMessage(),
+        ]);
+    }
+
     exit;
 }
 

@@ -95,6 +95,23 @@ select {
     }
 }
 
+.errorMessage {
+    color: #ec2222;
+    margin-top: 4px;
+    font-size: 14px;
+}
+
+.el-input {
+    .el-input__wrapper {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        font-family: inherit;
+        padding: 0.5rem;
+        font-size: 1rem;
+        height: 43px;
+    }
+}
+
 button,
 select {
     cursor: pointer;
@@ -136,5 +153,34 @@ select {
         display: block;
         font-weight: normal;
         font-size: 12px;
+    }
+
+    @media (max-width: 767px) {
+        border: none;
+
+        tbody {
+            tr,
+            th,
+            td {
+                display: block;
+            }
+
+            tr {
+                th,
+                td {
+                    width: 100%;
+                }
+
+                th + td {
+                    border-top: none;
+                }
+
+                & + tr {
+                    th {
+                        border-top: none;
+                    }
+                }
+            }
+        }
     }
 }

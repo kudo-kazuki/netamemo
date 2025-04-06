@@ -32,15 +32,15 @@ const props = withDefaults(defineProps<Props>(), {
 <style lang="scss" scoped>
 $size-styles: (
     'l': (
-        'fonst-size': 32px,
-        'padding': 16px 24px,
+        'font-size': 28px,
+        'padding': 8px 24px,
     ),
     'm': (
-        'fonst-size': 20px,
+        'font-size': 20px,
         'padding': 12px 20px,
     ),
     's': (
-        'fonst-size': 14px,
+        'font-size': 14px,
         'padding': 8px 12px,
     ),
 );
@@ -82,6 +82,8 @@ $color-styles: (
     border-radius: 6px;
     border: none;
     cursor: pointer;
+    font-weight: bold;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
 
     &:not(--disabled):hover {
         opacity: 0.9;

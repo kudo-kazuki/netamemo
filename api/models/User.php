@@ -30,4 +30,32 @@ class User extends Model
         'password',
         'provider_user_id',
     ];
+
+    // バリデーションルール（新規作成）
+    public static function createRules(): array
+    {
+        return [
+            'name'     => 'required|max:100',
+            'email'    => 'required|max:255',
+            'password' => 'required|max:255',
+            'birthday' => 'nullable|date',
+            'gender'   => 'nullable|numeric',
+            'message'  => 'nullable|max:255',
+            'profile'  => 'nullable|max:2000',
+            'notes'    => 'nullable|max:255',
+        ];
+    }
+
+    // バリデーションルール（更新時など）
+    public static function updateRules(): array
+    {
+        return [
+            'name'     => 'required|max:100',
+            'birthday' => 'nullable|date',
+            'gender'   => 'nullable|numeric',
+            'message'  => 'nullable|max:255',
+            'profile'  => 'nullable|max:2000',
+            'notes'    => 'nullable|max:255',
+        ];
+    }
 }

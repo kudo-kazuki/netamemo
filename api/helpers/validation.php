@@ -7,6 +7,11 @@ function validate(array $data, array $rules): array
         $rulesArray = explode('|', $ruleSet);
         $value = $data[$key] ?? null;
 
+        // nullable が含まれていて、値が null または空文字ならスキップ
+        if (in_array('nullable', $rulesArray, true) && ($value === null || $value === '')) {
+            continue;
+        }
+
         foreach ($rulesArray as $rule) {
             if ($rule === 'required' && ($value === null || $value === '')) {
                 $errors[$key][] = 'この項目は必須です';
@@ -21,6 +26,13 @@ function validate(array $data, array $rules): array
 
             if ($rule === 'numeric' && !is_numeric($value)) {
                 $errors[$key][] = '数値である必要があります';
+            }
+
+            if ($rule === 'date') {
+                // 日付形式のチェック
+                if (!strtotime($value)) {
+                    $errors[$key][] = '日付形式が正しくありません';
+                }
             }
         }
     }

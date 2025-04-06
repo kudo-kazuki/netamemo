@@ -27,6 +27,7 @@ export interface AuthState {
 /**ユーザーが登録時に入力するとき */
 export interface UserForInput {
     name?: string
+    password?: string
     email?: string
     birthday?: string | null
     gender?: number | null
@@ -37,6 +38,7 @@ export interface UserForInput {
 export interface User extends UserForInput {
     id: number
     name: string
+    password: string
     email: string
     status: number
     last_login_at: string | null

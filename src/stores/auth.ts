@@ -40,9 +40,9 @@ export const useAuthStore = defineStore('auth', {
                     this.isAuthenticated = true
                     this.name = decoded.name // ユーザー名を保存
                     this.level = decoded.level
-                    localStorage.setItem('jwt_token', this.token)
-                    localStorage.setItem('name', this.name)
-                    localStorage.setItem('level', String(this.level))
+                    localStorage.setItem('admin_jwt_token', this.token)
+                    localStorage.setItem('admin_name', this.name)
+                    localStorage.setItem('admin_level', String(this.level))
 
                     // 認証成功後、/admin/indexにリダイレクト
                     router.push('/admin/')
@@ -68,15 +68,15 @@ export const useAuthStore = defineStore('auth', {
             this.token = null
             this.isAuthenticated = false
             this.name = null // ユーザー名をリセット
-            localStorage.removeItem('jwt_token')
-            localStorage.removeItem('name') // ユーザー名も削除
+            localStorage.removeItem('admin_jwt_token')
+            localStorage.removeItem('admin_name') // ユーザー名も削除
             router.push('/admin/login')
         },
 
         checkAuth() {
-            const token = localStorage.getItem('jwt_token')
-            const storedname = localStorage.getItem('name')
-            const storedLevel = localStorage.getItem('level')
+            const token = localStorage.getItem('admin_jwt_token')
+            const storedname = localStorage.getItem('admin_name')
+            const storedLevel = localStorage.getItem('admin_level')
 
             if (token) {
                 try {
@@ -99,7 +99,9 @@ export const useAuthStore = defineStore('auth', {
         async fetchAdminList() {
             try {
                 const token =
-                    this.token ?? localStorage.getItem('jwt_token') ?? undefined
+                    this.token ??
+                    localStorage.getItem('admin_jwt_token') ??
+                    undefined
                 const response = await msgpackRequest<Admin[]>(
                     '/api/admin/index.php',
                     { action: 'list' },
@@ -115,7 +117,7 @@ export const useAuthStore = defineStore('auth', {
         },
 
         async fetchUserList(filters: Partial<UserFilterForm> = {}) {
-            const token = this.token || localStorage.getItem('jwt_token')
+            const token = this.token || localStorage.getItem('admin_jwt_token')
             if (!token || this.level !== 0) {
                 return
             }
@@ -139,7 +141,8 @@ export const useAuthStore = defineStore('auth', {
 
         async changeUserStatus(id: number, status: number) {
             try {
-                const token = this.token || localStorage.getItem('jwt_token')
+                const token =
+                    this.token || localStorage.getItem('admin_jwt_token')
                 if (!token || this.level !== 0) {
                     return
                 }

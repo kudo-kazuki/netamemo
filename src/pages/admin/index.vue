@@ -64,7 +64,9 @@ const saveEditAdmin = async () => {
 
     try {
         const token =
-            authStore.token ?? localStorage.getItem('jwt_token') ?? undefined
+            authStore.token ??
+            localStorage.getItem('admin_jwt_token') ??
+            undefined
 
         await msgpackRequest(
             '/api/admin/index.php',
@@ -120,7 +122,9 @@ const deleteAdmin = async () => {
 
     try {
         const token =
-            authStore.token ?? localStorage.getItem('jwt_token') ?? undefined
+            authStore.token ??
+            localStorage.getItem('admin_jwt_token') ??
+            undefined
 
         await msgpackRequest(
             '/api/admin/index.php',
@@ -179,7 +183,9 @@ const saveCreateAdmin = async () => {
 
     try {
         const token =
-            authStore.token ?? localStorage.getItem('jwt_token') ?? undefined
+            authStore.token ??
+            localStorage.getItem('admin_jwt_token') ??
+            undefined
 
         await msgpackRequest(
             '/api/admin/index.php',

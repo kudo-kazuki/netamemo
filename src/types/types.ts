@@ -3,6 +3,7 @@ export interface JWTPayload {
     name: string
     level: number | null
     sub: number
+    role: string
 }
 
 export interface Admin {
@@ -60,4 +61,19 @@ export interface UserFilterForm {
     birthday_end: string
     last_login_start: string
     last_login_end: string
+}
+
+export interface UserJWTPayload {
+    exp: number
+    name: string
+    email: string | null
+    sub: number
+    role: string
+}
+
+export interface UserAuthState {
+    token: string | null
+    isAuthenticated: boolean
+    name: string | null
+    email: string | null
 }

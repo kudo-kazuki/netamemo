@@ -40,6 +40,8 @@ if ((int)$user->status !== 1) {
 $payload = [
     'sub' => $user->id,
     'name' => $user->name,
+    'email' => $user->email,
+    'role' => 'user',
     'exp' => time() + 60 * 60 * 24, // 24時間有効
 ];
 

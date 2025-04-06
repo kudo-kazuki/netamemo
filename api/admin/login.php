@@ -31,6 +31,7 @@ $payload = [
     'sub' => $admin->id,
     'name' => $admin->name,
     'level' => $admin->level,
+    'role' => 'admin',
     'exp' => time() + 60 * 60 * 24, // 24時間有効
 ];
 

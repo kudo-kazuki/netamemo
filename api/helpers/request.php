@@ -38,10 +38,48 @@ function getAuthenticatedUser(): object
 }
 
 // 認証済みでなければ401を返す
+
+// roleなし（誰でもOK）
 function requireAuth(): object
 {
     try {
         return getAuthenticatedUser();
+    } catch (Exception $e) {
+        http_response_code(401);
+        echo json_encode(['message' => 'Unauthorized']);
+        exit;
+    }
+}
+
+// admin限定
+function requireAdmin(): object
+{
+    try {
+        $user = getAuthenticatedUser();
+        if ($user->role !== 'admin') {
+            http_response_code(403);
+            echo json_encode(['message' => 'Forbidden (admin only)']);
+            exit;
+        }
+        return $user;
+    } catch (Exception $e) {
+        http_response_code(401);
+        echo json_encode(['message' => 'Unauthorized']);
+        exit;
+    }
+}
+
+// user限定（一般ユーザー用）
+function requireUser(): object
+{
+    try {
+        $user = getAuthenticatedUser();
+        if ($user->role !== 'user') {
+            http_response_code(403);
+            echo json_encode(['message' => 'Forbidden (user only)']);
+            exit;
+        }
+        return $user;
     } catch (Exception $e) {
         http_response_code(401);
         echo json_encode(['message' => 'Unauthorized']);

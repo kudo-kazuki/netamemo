@@ -12,6 +12,7 @@ export const useUserAuthStore = defineStore('userAuth', {
         isAuthenticated: false,
         name: null,
         email: null,
+        id: null,
     }),
 
     actions: {
@@ -32,9 +33,11 @@ export const useUserAuthStore = defineStore('userAuth', {
                     this.isAuthenticated = true
                     this.name = decoded.name // ユーザー名を保存
                     this.email = decoded.email
+                    this.id = decoded.sub
                     localStorage.setItem('user_jwt_token', this.token)
                     localStorage.setItem('user_name', this.name)
                     localStorage.setItem('user_email', String(this.email))
+                    localStorage.setItem('user_id', String(this.id))
 
                     // 認証成功後、/mypage/indexにリダイレクト
                     router.push('/mypage')
@@ -64,6 +67,8 @@ export const useUserAuthStore = defineStore('userAuth', {
             this.name = null // ユーザー名をリセット
             localStorage.removeItem('user_jwt_token')
             localStorage.removeItem('user_name') // ユーザー名も削除
+            localStorage.removeItem('user_email')
+            localStorage.removeItem('user_id')
             router.push('/user/login')
         },
 
@@ -71,6 +76,7 @@ export const useUserAuthStore = defineStore('userAuth', {
             const token = localStorage.getItem('user_jwt_token')
             const storedName = localStorage.getItem('user_name')
             const storedEmail = localStorage.getItem('user_email')
+            const storedId = localStorage.getItem('user_id')
 
             if (token) {
                 try {
@@ -81,6 +87,7 @@ export const useUserAuthStore = defineStore('userAuth', {
                         this.isAuthenticated = true
                         this.name = storedName
                         this.email = storedEmail
+                        this.id = storedId ? parseInt(storedId) : null
                     } else {
                         this.logout() // トークン期限切れ
                     }

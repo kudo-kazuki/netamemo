@@ -76,4 +76,5 @@ export interface UserAuthState {
     isAuthenticated: boolean
     name: string | null
     email: string | null
+    id: number | null
 }

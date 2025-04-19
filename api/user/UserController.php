@@ -71,6 +71,18 @@ class UserController
         }
     }
 
+    public function getInfo(): void
+    {
+        $authUser = requireUser();
+        $user = \Models\User::find($authUser->sub);
+
+        if (!$user) {
+            msgpack_response(['message' => 'ユーザーが見つかりません'], 404);
+        }
+
+        msgpack_response($user->toArray());
+    }
+
     private function sendVerificationEmail(string $toEmail, string $toName, string $token): void
     {
         try {

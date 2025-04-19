@@ -11,6 +11,9 @@ switch ($action) {
     case 'create':
         $controller->create($input);
         break;
+    case 'getInfo':
+        $controller->getInfo();
+        break;
     default:
         msgpack_response('アクションが無効です', 400);
         break;

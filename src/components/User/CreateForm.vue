@@ -2,16 +2,26 @@
 import { ref, watch } from 'vue'
 import { UserForInput } from '@/types/types'
 import cloneDeep from 'lodash/cloneDeep'
-import { fa } from 'element-plus/es/locales.mjs'
 
 interface Props {
     input?: UserForInput
     isFirstCretae?: boolean
+    isEditMode?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {})
+const props = withDefaults(defineProps<Props>(), {
+    isEditMode: true,
+})
 
 const emit = defineEmits(['update:input', 'submit'])
+
+const isEditMode = ref(props.isEditMode ?? true)
+watch(
+    () => props.isEditMode,
+    (newVal) => {
+        isEditMode.value = newVal
+    },
+)
 
 const DEFAULT_INPUT: UserForInput = {
     name: '',
@@ -110,10 +120,13 @@ const onSubmit = () => {
                 <tbody>
                     <tr>
                         <th>
-                            <label for="name">名前<RequireLabel /></label>
+                            <label for="name"
+                                >名前<RequireLabel v-if="isEditMode"
+                            /></label>
                         </th>
                         <td>
                             <input
+                                v-if="isEditMode"
                                 type="text"
                                 v-model="input.name"
                                 id="name"
@@ -127,11 +140,12 @@ const onSubmit = () => {
                     <tr>
                         <th>
                             <label for="password"
-                                >パスワード<RequireLabel
+                                >パスワード<RequireLabel v-if="isEditMode"
                             /></label>
                         </th>
                         <td>
                             <input
+                                v-if="isEditMode"
                                 type="password"
                                 v-model="input.password"
                                 id="password"
@@ -148,11 +162,12 @@ const onSubmit = () => {
                     <tr>
                         <th>
                             <label for="email"
-                                >メールアドレス<RequireLabel
+                                >メールアドレス<RequireLabel v-if="isEditMode"
                             /></label>
                         </th>
                         <td>
                             <input
+                                v-if="isEditMode"
                                 type="email"
                                 v-model="input.email"
                                 id="email"
@@ -169,6 +184,7 @@ const onSubmit = () => {
                         </th>
                         <td>
                             <el-date-picker
+                                v-if="isEditMode"
                                 id="birthday"
                                 v-model="birthdayModel"
                                 type="date"
@@ -182,7 +198,10 @@ const onSubmit = () => {
                     <tr>
                         <th>性別</th>
                         <td>
-                            <ul class="UserCreateForm__radioItems">
+                            <ul
+                                v-if="isEditMode"
+                                class="UserCreateForm__radioItems"
+                            >
                                 <li>
                                     <Radio
                                         id="men"
@@ -208,6 +227,7 @@ const onSubmit = () => {
                         </th>
                         <td>
                             <textarea
+                                v-if="isEditMode"
                                 v-model="input.message"
                                 id="message"
                             ></textarea>
@@ -219,6 +239,7 @@ const onSubmit = () => {
                         </th>
                         <td>
                             <textarea
+                                v-if="isEditMode"
                                 v-model="input.profile"
                                 id="profile"
                             ></textarea>
@@ -228,7 +249,7 @@ const onSubmit = () => {
             </table>
         </el-scrollbar>
 
-        <div class="UserCreateForm__footer">
+        <div v-if="isEditMode" class="UserCreateForm__footer">
             <Button
                 class="UserCreateForm__button"
                 color="blue"

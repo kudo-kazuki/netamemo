@@ -1,10 +1,13 @@
 import { defineStore } from 'pinia'
 import { msgpackRequest } from '@/utils/msgpackRequest'
-import { UserForInput } from '@/types/types'
+import { UserForInput, User } from '@/types/types'
 import { decode } from '@msgpack/msgpack'
 import { AxiosError } from 'axios'
 
 export const useUserStore = defineStore('user', {
+    state: () => ({
+        userInfo: null as User | null,
+    }),
     actions: {
         async registerUser(inputData: UserForInput) {
             try {
@@ -34,6 +37,36 @@ export const useUserStore = defineStore('user', {
 
                 throw new Error(errorMessage)
             }
+        },
+
+        async getUserInfo(force = false): Promise<User | null> {
+            // キャッシュがあればそれを返す
+            if (this.userInfo && !force) {
+                return this.userInfo
+            }
+
+            const token = localStorage.getItem('user_jwt_token')
+            if (!token) {
+                return null
+            }
+
+            try {
+                const response = await msgpackRequest<User>(
+                    '/api/user/index.php',
+                    { action: 'getInfo' },
+                    { token },
+                )
+                this.userInfo = response // ← state に保存
+                return response
+            } catch (error) {
+                console.error('ユーザー情報取得失敗', error)
+                return null
+            }
+        },
+
+        // 更新APIを後で追加したとき用に：更新時に上書きもできる
+        setUserInfo(updated: User) {
+            this.userInfo = updated
         },
     },
 })

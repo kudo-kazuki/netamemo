@@ -70,6 +70,12 @@ $color-styles: (
         'hover-color': #fff,
         'hover-background-color': #c11d1d,
     ),
+    'orange': (
+        'color': #fff,
+        'background-color': #e97911,
+        'hover-color': #fff,
+        'hover-background-color': #ee8019,
+    ),
 );
 
 .Button {

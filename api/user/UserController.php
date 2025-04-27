@@ -121,4 +121,42 @@ EOT;
             ], 500);
         }
     }
+
+
+    public function update(array $input): void
+    {
+        $authUser = requireUser(); // 認証チェックして、ログインユーザー情報取得
+        $user = \Models\User::find($authUser->sub);
+
+        if (!$user) {
+            msgpack_response(['message' => 'ユーザーが見つかりません'], 404);
+        }
+
+        // バリデーション
+        $rules = \Models\User::updateRules(); // ← Userモデルに定義済み
+        $errors = validate($input, $rules);
+
+        if (!empty($errors)) {
+            msgpack_response(['message' => 'バリデーションエラー', 'errors' => $errors], 422);
+        }
+
+        try {
+            // 必要なフィールドだけ上書き
+            $user->name = $input['name'];
+            $user->email = $input['email'];
+            $user->birthday = $input['birthday'] ?? null;
+            $user->gender = $input['gender'] ?? null;
+            $user->message = $input['message'] ?? null;
+            $user->profile = $input['profile'] ?? null;
+            $user->save();
+
+            msgpack_response(['success' => true]);
+        } catch (Exception $e) {
+            msgpack_response([
+                'message' => '更新処理に失敗しました',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 }

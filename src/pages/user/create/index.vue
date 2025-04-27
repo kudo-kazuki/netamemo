@@ -72,7 +72,7 @@ const closeRegisterFailed = () => {
     >
         <template v-if="!isRegisterComplete">
             <h1>新規登録</h1>
-            <CreateForm @submit="cretate" />
+            <CreateForm @submit="cretate" isFirstCretae isEditMode />
         </template>
         <template v-else>
             <h1>仮登録完了</h1>

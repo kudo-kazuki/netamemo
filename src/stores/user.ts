@@ -68,5 +68,30 @@ export const useUserStore = defineStore('user', {
         setUserInfo(updated: User) {
             this.userInfo = updated
         },
+
+        // ユーザープロフィール情報編集（ユーザーが自分で編集するとき）
+        updateUserProfile: async function (
+            inputData: Partial<UserForInput>,
+        ): Promise<boolean> {
+            const token = localStorage.getItem('user_jwt_token')
+            if (!token) {
+                throw new Error('認証情報がありません')
+            }
+
+            try {
+                const response = await msgpackRequest<{ success: boolean }>(
+                    '/api/user/index.php',
+                    {
+                        action: 'update',
+                        ...inputData,
+                    },
+                    { token },
+                )
+                return response.success === true
+            } catch (error) {
+                console.error('プロフィール更新失敗', error)
+                throw error
+            }
+        },
     },
 })

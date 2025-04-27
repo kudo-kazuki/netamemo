@@ -4,7 +4,7 @@ import { UserForInput } from '@/types/types'
 import cloneDeep from 'lodash/cloneDeep'
 
 interface Props {
-    input?: UserForInput
+    input?: UserForInput | null
     isFirstCretae?: boolean
     isEditMode?: boolean
 }
@@ -22,6 +22,9 @@ watch(
         isEditMode.value = newVal
     },
 )
+const setEditMode = (flg: boolean) => {
+    isEditMode.value = flg
+}
 
 const DEFAULT_INPUT: UserForInput = {
     name: '',
@@ -53,6 +56,11 @@ watch(
     { deep: true },
 )
 
+const GENDER_TEXT: Record<number, string> = {
+    1: '男性',
+    2: '女性',
+}
+
 const birthdayModel = computed({
     get: () => input.value.birthday ?? '', // fallbackとして空文字
     set: (val) => {
@@ -81,7 +89,7 @@ const onValidate = () => {
         errorMessages.value.name = '名前は必須項目です'
     }
 
-    if (!input.value.password) {
+    if (!input.value.password && props.isFirstCretae) {
         errorMessages.value.password = 'パスワードは必須項目です'
     }
 
@@ -125,6 +133,9 @@ const onSubmit = () => {
                             /></label>
                         </th>
                         <td>
+                            <template v-if="!isEditMode && !isFirstCretae">{{
+                                input.name ?? '-'
+                            }}</template>
                             <input
                                 v-if="isEditMode"
                                 type="text"
@@ -137,7 +148,7 @@ const onSubmit = () => {
                             </p>
                         </td>
                     </tr>
-                    <tr>
+                    <tr v-if="isEditMode && isFirstCretae">
                         <th>
                             <label for="password"
                                 >パスワード<RequireLabel v-if="isEditMode"
@@ -166,6 +177,9 @@ const onSubmit = () => {
                             /></label>
                         </th>
                         <td>
+                            <template v-if="!isEditMode && !isFirstCretae">{{
+                                input.email ?? '-'
+                            }}</template>
                             <input
                                 v-if="isEditMode"
                                 type="email"
@@ -183,6 +197,9 @@ const onSubmit = () => {
                             <label for="birthday">生年月日</label>
                         </th>
                         <td>
+                            <template v-if="!isEditMode && !isFirstCretae">{{
+                                input.birthday ?? '-'
+                            }}</template>
                             <el-date-picker
                                 v-if="isEditMode"
                                 id="birthday"
@@ -198,6 +215,9 @@ const onSubmit = () => {
                     <tr>
                         <th>性別</th>
                         <td>
+                            <template v-if="!isEditMode && !isFirstCretae">{{
+                                input.gender ? GENDER_TEXT[input.gender] : '-'
+                            }}</template>
                             <ul
                                 v-if="isEditMode"
                                 class="UserCreateForm__radioItems"
@@ -226,6 +246,9 @@ const onSubmit = () => {
                             <label for="message">一言メッセージ</label>
                         </th>
                         <td>
+                            <pre v-if="!isEditMode && !isFirstCretae">{{
+                                input.message ?? '-'
+                            }}</pre>
                             <textarea
                                 v-if="isEditMode"
                                 v-model="input.message"
@@ -238,6 +261,9 @@ const onSubmit = () => {
                             <label for="profile">自己紹介</label>
                         </th>
                         <td>
+                            <pre v-if="!isEditMode && !isFirstCretae">{{
+                                input.profile ?? '-'
+                            }}</pre>
                             <textarea
                                 v-if="isEditMode"
                                 v-model="input.profile"
@@ -249,8 +275,26 @@ const onSubmit = () => {
             </table>
         </el-scrollbar>
 
-        <div v-if="isEditMode" class="UserCreateForm__footer">
+        <div class="UserCreateForm__footer">
             <Button
+                v-if="!isEditMode && !isFirstCretae"
+                class="UserCreateForm__button"
+                color="orange"
+                text="編集"
+                size="m"
+                :isDisabled="props.input === null"
+                @click="setEditMode(true)"
+            />
+            <Button
+                v-if="isEditMode && !isFirstCretae"
+                class="UserCreateForm__button"
+                text="キャンセル"
+                color="gray"
+                size="m"
+                @click="setEditMode(false)"
+            />
+            <Button
+                v-if="isEditMode || isFirstCretae"
                 class="UserCreateForm__button"
                 color="blue"
                 text="確認"
@@ -265,7 +309,10 @@ const onSubmit = () => {
             @close="closeConfirm()"
         >
             <template #body
-                ><p>以下の内容で仮登録します。よろしいですか？</p>
+                ><p>
+                    以下の内容で<span v-if="isFirstCretae">仮</span
+                    >登録します。よろしいですか？
+                </p>
                 <table class="table">
                     <colgroup>
                         <col width="180" />
@@ -277,7 +324,7 @@ const onSubmit = () => {
                                 {{ input.name }}
                             </td>
                         </tr>
-                        <tr>
+                        <tr v-if="isFirstCretae">
                             <th>パスワード&nbsp;<RequireLabel /></th>
                             <td>
                                 {{ '●'.repeat(input.password?.length || 0) }}
@@ -367,7 +414,7 @@ const onSubmit = () => {
     }
 
     &__button {
-        width: 120px;
+        width: 140px;
     }
 
     &__confirmFooter {

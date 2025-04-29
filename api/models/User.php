@@ -2,6 +2,7 @@
 namespace Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Model
 {
@@ -57,5 +58,20 @@ class User extends Model
             'profile'  => 'nullable|max:2000',
             'notes'    => 'nullable|max:255',
         ];
+    }
+
+    public function templates(): HasMany
+    {
+        return $this->hasMany(Template::class);
+    }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function postLikes(): HasMany
+    {
+        return $this->hasMany(PostLike::class);
     }
 }

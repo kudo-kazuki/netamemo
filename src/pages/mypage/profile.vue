@@ -76,6 +76,7 @@ const closeProfileComplete = () => {
 <template>
     <section class="Page">
         <h1>profile</h1>
+        <p><RouterLink to="/mypage">戻る</RouterLink></p>
         <CreateForm
             :isEditMode="false"
             :input="userInfo"

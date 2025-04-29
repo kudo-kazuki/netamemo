@@ -35,9 +35,14 @@ console.log('userAuthStore', userAuthStore)
             }}）
         </p>
 
-        <p>
-            <RouterLink to="/mypage/profile">プロフィール確認</RouterLink>
-        </p>
+        <ul>
+            <li>
+                <RouterLink to="/mypage/profile">プロフィール確認</RouterLink>
+            </li>
+            <li>
+                <RouterLink to="/template/create">ジャンル新規作成</RouterLink>
+            </li>
+        </ul>
 
         <Button
             @click.prevent="logout()"
@@ -46,8 +51,6 @@ console.log('userAuthStore', userAuthStore)
             size="m"
             color="blue"
         />
-
-        <pre>{{ userInfo }}</pre>
     </section>
 </template>
 

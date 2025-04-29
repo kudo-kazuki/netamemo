@@ -26,6 +26,7 @@ declare module 'vue' {
     RequireLabel: typeof import('./components/RequireLabel.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TemplateForm: typeof import('./components/Template/TemplateForm.vue')['default']
   }
   export interface ComponentCustomProperties {
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']

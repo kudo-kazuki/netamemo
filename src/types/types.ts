@@ -78,3 +78,20 @@ export interface UserAuthState {
     email: string | null
     id: number | null
 }
+
+/**ユーザーがtemplate登録時に入力するとき
+- title: string
+- visibility: number // 0 | 1 | 2
+- headings: {
+        heading_order: number
+        heading_title: string
+    }[]
+*/
+export interface TemplateForInput {
+    title: string
+    visibility: number // 0 | 1 | 2
+    headings: {
+        heading_order: number
+        heading_title: string
+    }[]
+}

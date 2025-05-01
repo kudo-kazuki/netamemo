@@ -11,7 +11,7 @@ const router = createRouter({
 })
 
 // 共通で認証が必要な prefix を配列で管理
-const userProtectedPaths = ['/mypage', '/template']
+const userProtectedPaths = ['/mypage', '/template', '/post']
 
 router.beforeEach((to, from, next) => {
     const authStore = useAuthStore()

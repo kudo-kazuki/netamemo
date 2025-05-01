@@ -142,7 +142,6 @@ const addHeading = () => {
 
 <template>
     <div class="TemplateForm">
-        {{ input }}
         <el-scrollbar>
             <table class="table">
                 <tbody>

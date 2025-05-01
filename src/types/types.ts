@@ -88,10 +88,22 @@ export interface UserAuthState {
     }[]
 */
 export interface TemplateForInput {
+    id?: number
     title: string
     visibility: number // 0 | 1 | 2
     headings: {
         heading_order: number
         heading_title: string
     }[]
+}
+
+export interface TemplateWithHeadings extends TemplateForInput {
+    id: number
+    created_at: string
+    updated_at: string
+    headings: (TemplateForInput['headings'][number] & { id: number })[]
+}
+
+export interface TemplateForInputWithId extends TemplateForInput {
+    id: number
 }

@@ -122,6 +122,19 @@ select {
     border: 1px solid #cfcfcf;
     margin: 12px 0;
 
+    thead {
+        tr {
+            th {
+                border: 1px solid #cfcfcf;
+                padding: 12px 12px;
+                vertical-align: middle;
+                background-color: #f8f7f4;
+                font-weight: bold;
+                text-align: center;
+            }
+        }
+    }
+
     tbody {
         text-align: left;
 

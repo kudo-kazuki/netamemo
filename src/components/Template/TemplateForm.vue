@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { TemplateForInput } from '@/types/types'
+import { TEMPLATE_VISIBILITY_TEXT } from '@/utils/constants'
 import cloneDeep from 'lodash/cloneDeep'
 
 interface Props {
@@ -67,12 +68,6 @@ const openConfirm = () => {
 }
 const closeConfirm = () => {
     isOpenConfirm.value = false
-}
-
-const VISIBILITY_TEXT: Record<number, string> = {
-    0: '非公開',
-    1: 'フレンドのみ',
-    2: '全体',
 }
 
 const errorMessages = ref<Record<string, string>>({
@@ -178,7 +173,7 @@ const addHeading = () => {
                         <td>
                             <template v-if="!isEditMode && !isFirstCretae">{{
                                 input.visibility
-                                    ? VISIBILITY_TEXT[input.visibility]
+                                    ? TEMPLATE_VISIBILITY_TEXT[input.visibility]
                                     : '-'
                             }}</template>
                             <ul
@@ -188,7 +183,7 @@ const addHeading = () => {
                                 <li>
                                     <Radio
                                         id="visibility0"
-                                        :text="VISIBILITY_TEXT[0]"
+                                        :text="TEMPLATE_VISIBILITY_TEXT[0]"
                                         :value="0"
                                         v-model="input.visibility"
                                     />
@@ -196,7 +191,7 @@ const addHeading = () => {
                                 <li>
                                     <Radio
                                         id="visibility1"
-                                        :text="VISIBILITY_TEXT[1]"
+                                        :text="TEMPLATE_VISIBILITY_TEXT[1]"
                                         :value="1"
                                         v-model="input.visibility"
                                     />
@@ -204,7 +199,7 @@ const addHeading = () => {
                                 <li>
                                     <Radio
                                         id="visibility2"
-                                        :text="VISIBILITY_TEXT[2]"
+                                        :text="TEMPLATE_VISIBILITY_TEXT[2]"
                                         :value="2"
                                         v-model="input.visibility"
                                     />
@@ -243,23 +238,6 @@ const addHeading = () => {
 
         <div class="TemplateForm__footer">
             <Button
-                v-if="!isEditMode && !isFirstCretae"
-                class="TemplateForm__button"
-                color="orange"
-                text="編集"
-                size="m"
-                :isDisabled="props.input === null"
-                @click="setEditMode(true)"
-            />
-            <Button
-                v-if="isEditMode && !isFirstCretae"
-                class="TemplateForm__button"
-                text="キャンセル"
-                color="gray"
-                size="m"
-                @click="setEditMode(false)"
-            />
-            <Button
                 v-if="isEditMode || isFirstCretae"
                 class="TemplateForm__button"
                 color="blue"
@@ -271,11 +249,15 @@ const addHeading = () => {
 
         <Modal
             :isShow="isOpenConfirm"
-            title="登録内容確認"
+            :title="`${isFirstCretae ? '登録' : '編集'}内容確認`"
             @close="closeConfirm()"
         >
             <template #body
-                ><p>以下の内容で登録します。よろしいですか？</p>
+                ><p>
+                    以下の内容で{{
+                        isFirstCretae ? '登録' : '上書き'
+                    }}します。よろしいですか？
+                </p>
                 <table class="table">
                     <colgroup>
                         <col width="180" />
@@ -290,7 +272,7 @@ const addHeading = () => {
                         <tr>
                             <th>公開範囲&nbsp;<RequireLabel /></th>
                             <td>
-                                {{ VISIBILITY_TEXT[input.visibility] }}
+                                {{ TEMPLATE_VISIBILITY_TEXT[input.visibility] }}
                             </td>
                         </tr>
                         <tr>
@@ -319,7 +301,7 @@ const addHeading = () => {
                     />
                     <Button
                         class="TemplateForm__button"
-                        text="登録"
+                        :text="isFirstCretae ? '登録' : '保存'"
                         color="blue"
                         @click="onSubmit()"
                     />

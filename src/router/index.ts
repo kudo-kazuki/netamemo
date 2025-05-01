@@ -10,6 +10,9 @@ const router = createRouter({
     routes: [...routes],
 })
 
+// 共通で認証が必要な prefix を配列で管理
+const userProtectedPaths = ['/mypage', '/template']
+
 router.beforeEach((to, from, next) => {
     const authStore = useAuthStore()
     authStore.checkAuth()
@@ -20,7 +23,9 @@ router.beforeEach((to, from, next) => {
     const isAdminPage = to.path.startsWith('/admin')
     const isAdminLogin = to.path === '/admin/login'
 
-    const isUserPage = to.path.startsWith('/mypage')
+    const isUserPage = userProtectedPaths.some((prefix) =>
+        to.path.startsWith(prefix),
+    )
     const isUserLogin = to.path === '/user/login'
 
     // 管理者ページにアクセス → ログインしてなければ /admin/login へ

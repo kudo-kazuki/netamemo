@@ -40,7 +40,7 @@ console.log('userAuthStore', userAuthStore)
                 <RouterLink to="/mypage/profile">プロフィール確認</RouterLink>
             </li>
             <li>
-                <RouterLink to="/template/create">ジャンル新規作成</RouterLink>
+                <RouterLink to="/template/">ジャンル確認</RouterLink>
             </li>
         </ul>
 

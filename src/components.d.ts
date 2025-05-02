@@ -21,6 +21,7 @@ declare module 'vue' {
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     Loading: typeof import('./components/Loading.vue')['default']
     Modal: typeof import('./components/Modal.vue')['default']
+    PostForm: typeof import('./components/Post/PostForm.vue')['default']
     PreLoad: typeof import('./components/PreLoad.vue')['default']
     Radio: typeof import('./components/Radio.vue')['default']
     RequireLabel: typeof import('./components/RequireLabel.vue')['default']

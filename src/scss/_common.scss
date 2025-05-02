@@ -101,14 +101,26 @@ select {
     font-size: 14px;
 }
 
-.el-input {
-    .el-input__wrapper {
+.el-input,
+.el-select {
+    .el-input__wrapper,
+    .el-select__wrapper {
         box-shadow: none;
         border: 1px solid #ccc;
         font-family: inherit;
         padding: 0.5rem;
         font-size: 1rem;
         height: 43px;
+    }
+
+    .el-select__placeholder {
+        color: inherit;
+    }
+}
+
+.el-popper {
+    .el-select-dropdown__item {
+        color: inherit;
     }
 }
 

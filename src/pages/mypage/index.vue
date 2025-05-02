@@ -42,6 +42,9 @@ console.log('userAuthStore', userAuthStore)
             <li>
                 <RouterLink to="/template/">ジャンル確認</RouterLink>
             </li>
+            <li>
+                <RouterLink to="/post/">投稿確認</RouterLink>
+            </li>
         </ul>
 
         <Button

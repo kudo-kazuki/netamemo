@@ -107,3 +107,12 @@ export interface TemplateWithHeadings extends TemplateForInput {
 export interface TemplateForInputWithId extends TemplateForInput {
     id: number
 }
+
+export interface PostForInput {
+    template_id: number | undefined
+    title: string
+    contents: {
+        heading_id: number | null
+        content: string
+    }[]
+}

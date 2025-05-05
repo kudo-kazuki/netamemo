@@ -6,7 +6,7 @@ import cloneDeep from 'lodash/cloneDeep'
 interface Props {
     input?: PostForInput | null
     templateList?: TemplateWithHeadings[]
-    isFirstCretae?: boolean
+    isCretae?: boolean
     isEditMode?: boolean
 }
 
@@ -98,6 +98,20 @@ watch(
     },
     { deep: true },
 )
+
+const currentTemplateTitleFromTemplateList = computed(() => {
+    if (
+        !input.value.template_id ||
+        !props.templateList ||
+        !props.templateList.length
+    ) {
+        return ''
+    }
+
+    return props.templateList.find(
+        (item) => item.id === input.value.template_id,
+    )?.title
+})
 
 // contentsItemsByTemplateId の選択中テンプレート（template_id）の内容と
 // input.value.contents を双方向ではなく「片方向で同期」する watch 処理
@@ -214,8 +228,30 @@ const onValidate = () => {
 }
 
 const onSubmit = () => {
+    closeConfirm()
     emit('submit', input.value)
     return false
+}
+
+/**
+ * 指定されたテンプレートIDと見出しIDに一致するheading_titleを返す
+ * 該当しなければundefinedを返す
+ */
+const getHeadingTitleByHeadingIdFromTemplateList = (
+    template_id: number | undefined,
+    heading_id: number | null,
+): string | undefined => {
+    if (!template_id || !props.templateList || !heading_id) {
+        return undefined
+    }
+
+    const template = props.templateList.find((t) => t.id === template_id)
+    if (!template) {
+        return undefined
+    }
+
+    const heading = template.headings.find((h) => h.id === heading_id)
+    return heading?.heading_title
 }
 </script>
 
@@ -231,7 +267,7 @@ const onSubmit = () => {
                             /></label>
                         </th>
                         <td>
-                            <template v-if="!isEditMode && !isFirstCretae">{{
+                            <template v-if="!isEditMode && !isCretae">{{
                                 input.template_id ?? '-'
                             }}</template>
                             <el-select
@@ -261,7 +297,7 @@ const onSubmit = () => {
                             /></label>
                         </th>
                         <td>
-                            <template v-if="!isEditMode && !isFirstCretae">{{
+                            <template v-if="!isEditMode && !isCretae">{{
                                 input.title ?? '-'
                             }}</template>
                             <input
@@ -293,9 +329,9 @@ const onSubmit = () => {
                                 :key="
                                     contentItem.heading_id ?? `heading-${index}`
                                 "
-                                class="contentBlock"
+                                class="PostForm__contentBlock"
                             >
-                                <h2 class="headingTitle">
+                                <h2 class="PostForm__headingTitle">
                                     {{
                                         props.templateList
                                             ?.find(
@@ -329,11 +365,15 @@ const onSubmit = () => {
             <pre>{{ contentsItemsByTemplateId }}</pre>
             ---------
             <pre style="white-space: pre">{{ input }}</pre>
+            ---------
+            <pre style="white-space: pre">
+props.templateList:{{ props.templateList }}</pre
+            >
         </el-scrollbar>
 
         <div class="PostForm__footer">
             <Button
-                v-if="isEditMode || isFirstCretae"
+                v-if="isEditMode || isCretae"
                 class="PostForm__button"
                 color="blue"
                 text="確認"
@@ -344,30 +384,50 @@ const onSubmit = () => {
 
         <Modal
             :isShow="isOpenConfirm"
-            :title="`${isFirstCretae ? '投稿' : '編集'}内容確認`"
+            :title="`${isCretae ? '投稿' : '編集'}内容確認`"
             @close="closeConfirm()"
         >
             <template #body
                 ><p>
                     以下の内容で{{
-                        isFirstCretae ? '投稿' : '上書き'
+                        isCretae ? '投稿' : '上書き'
                     }}します。よろしいですか？
                 </p>
                 <table class="table">
                     <colgroup>
-                        <col width="180" />
+                        <col width="120" />
                     </colgroup>
                     <tbody>
                         <tr>
-                            <th>ジャンル&nbsp;<RequireLabel /></th>
+                            <th>ジャンル</th>
                             <td>
-                                {{ input.template_id }}
+                                {{ currentTemplateTitleFromTemplateList }}
                             </td>
                         </tr>
                         <tr>
-                            <th>タイトル&nbsp;<RequireLabel /></th>
+                            <th>タイトル</th>
                             <td>
                                 {{ input.title }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>内容</th>
+                            <td>
+                                <div
+                                    v-for="(item, index) in input.contents"
+                                    :key="item.heading_id ?? index"
+                                    class="PostForm__contentBlock"
+                                >
+                                    <h2 class="PostForm__headingTitle">
+                                        {{
+                                            getHeadingTitleByHeadingIdFromTemplateList(
+                                                input.template_id,
+                                                item.heading_id,
+                                            )
+                                        }}
+                                    </h2>
+                                    <pre v-html="item.content"></pre>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -383,7 +443,7 @@ const onSubmit = () => {
                     />
                     <Button
                         class="PostForm__button"
-                        :text="isFirstCretae ? '投稿' : '保存'"
+                        :text="isCretae ? '投稿' : '保存'"
                         color="blue"
                         @click="onSubmit()"
                     />
@@ -408,6 +468,20 @@ const onSubmit = () => {
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
+    }
+
+    &__headingTitle {
+        font-weight: bold;
+    }
+
+    &__contentBlock {
+        display: flex;
+        flex-direction: column;
+        row-gap: 8px;
+    }
+
+    &__contentBlock + &__contentBlock {
+        margin-top: 20px;
     }
 
     textarea {

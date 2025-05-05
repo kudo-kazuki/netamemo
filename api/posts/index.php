@@ -11,6 +11,12 @@ switch ($action) {
     case 'create':
         $controller->create($input);
         break;
+    case 'listByTemplate':
+        $controller->listByTemplate($input);
+        break;
+
+
+
 
     default:
         msgpack_response(['message' => 'アクションが無効です'], 400);

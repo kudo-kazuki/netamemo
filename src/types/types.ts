@@ -108,11 +108,41 @@ export interface TemplateForInputWithId extends TemplateForInput {
     id: number
 }
 
+// contents の構造を共通化
+export interface PostContentBase {
+    content: string
+}
+
+// 入力用（post作成用）：heading_id が必要
+export interface PostContentForInput extends PostContentBase {
+    heading_id: number | null
+}
+
+// 表示用（一覧表示用）：heading_order が必要
+export interface PostContentForDisplay extends PostContentBase {
+    heading_order: number
+}
+
+// 投稿作成用
 export interface PostForInput {
     template_id: number | undefined
     title: string
-    contents: {
-        heading_id: number | null
-        content: string
-    }[]
+    contents: PostContentForInput[]
+}
+
+// 投稿一覧取得時の1件分
+export interface PostItem {
+    id: number
+    template_id: number
+    title: string
+    created_at: string
+    updated_at: string
+    contents: PostContentForDisplay[]
+}
+
+export interface PostListResponse {
+    total: number
+    page: number
+    per_page: number
+    posts: PostItem[]
 }

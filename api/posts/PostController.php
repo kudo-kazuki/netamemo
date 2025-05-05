@@ -51,4 +51,61 @@ class PostController
             msgpack_response(['message' => '投稿の保存に失敗しました', 'error' => $e->getMessage()], 500);
         }
     }
+
+    public function listByTemplate(array $input): void
+    {
+        $authUser = requireUser();
+        $userId = $authUser->sub;
+
+        $templateId = $input['template_id'] ?? null;
+        $page = max((int)($input['page'] ?? 1), 1);
+        $perPage = (int)($input['per_page'] ?? 50);
+        $sortOrder = strtolower($input['sort'] ?? 'desc') === 'asc' ? 'asc' : 'desc';
+
+        if (!$templateId) {
+            msgpack_response(['message' => 'テンプレートIDは必須です'], 400);
+        }
+
+        // 所有権チェック
+        $template = Template::where('id', $templateId)->where('user_id', $userId)->first();
+        if (!$template) {
+            msgpack_response(['message' => 'テンプレートが存在しないか、アクセス権がありません'], 404);
+        }
+
+        // 投稿一覧取得
+        $query = Post::with('contents')
+            ->where('template_id', $templateId)
+            ->orderBy('created_at', $sortOrder);
+
+        $total = $query->count();
+        $posts = $query
+            ->offset(($page - 1) * $perPage)
+            ->limit($perPage)
+            ->get()
+            ->map(function ($post) {
+                return [
+                    'id' => $post->id,
+                    'template_id' => $post->template_id,
+                    'title' => $post->title,
+                    'created_at' => $post->created_at->format('Y-m-d H:i:s'),
+                    'updated_at' => $post->updated_at->format('Y-m-d H:i:s'),
+                    'contents' => $post->contents
+                        ->sortBy('heading_order')
+                        ->map(function ($c) {
+                            return [
+                                'heading_order' => $c->heading_order,
+                                'content' => $c->content,
+                            ];
+                        })->values(),
+                ];
+            });
+
+        msgpack_response([
+            'total' => $total,
+            'page' => $page,
+            'per_page' => $perPage,
+            'posts' => $posts,
+        ]);
+    }
+
 }
